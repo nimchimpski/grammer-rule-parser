@@ -15,12 +15,14 @@ V -> "smiled" | "tell" | "were"
 """
 
 NONTERMINALS = """
-S -> NP | VP | PP | NP VP
+S -> NP | VP | PP | VP NP | VP NP PP | VP PP | S Conj S 
 
-AP -> Adj | Adj AP
-NP -> N | Det N | AP NP | NP AP 
-PP -> P | PP NP | NP PP | PP NP
-VP -> V | NP VP | VP NP | VP Conj VP | VP PP | Adv VP | VP Adv
+
+NAP -> N | Adj NAP | NAP PP
+NP -> Det NAP |Det NAP Adv
+PP -> P NP | P NAP
+VAP -> V |Adv VAP |VAP Adv
+VP -> NAP VAP | VAP NAP | VAP NP | NP VAP
 
 """
 
@@ -45,6 +47,7 @@ def main():
     # Attempt to parse sentence
     try:
         trees = list(parser.parse(s))
+        # print(f"---tree type= {type(trees)}")
     except ValueError as e:
         print(e)
         return
@@ -55,6 +58,7 @@ def main():
     # Print each tree with noun phrase chunks
     for tree in trees:
         tree.pretty_print()
+        
 
         print("Noun Phrase Chunks")
         for np in np_chunk(tree):
@@ -72,12 +76,12 @@ def preprocess(sentence):
     sentence = sentence.lower()
 
     # Convert `sentence` to a list of its words with tokenisation
-    sentence = nltk.word_tokenize(sentence)
-    # print(f"---{sentence}")
+    tokens = nltk.word_tokenize(sentence)
+    # print(f"+++tokens= {tokens} \n{type(tokens)}")
 
     # remove punctuation
     toremove = []
-    for word in sentence:
+    for word in tokens:
         # print(f"---{word}")
     # removing any word that does not contain at least one alphabetic character.
         counter = 0
@@ -91,12 +95,12 @@ def preprocess(sentence):
             # print(f"---removing {word}")
             toremove.append(word)
     for word in toremove:
-        sentence.remove(word)
+        tokens.remove(word)
 
 
 
     # return a list of strings
-    return sentence
+    return tokens
 
 
 def np_chunk(tree):
@@ -106,7 +110,14 @@ def np_chunk(tree):
     whose label is "NP" that does not itself contain any other
     noun phrases as subtrees.
     """
-    raise NotImplementedError
+    print(f"+++tree type= {type(tree)}")
+    print(f"+++tree.subtrees()= {type(tree.subtrees())}")
+    for i in tree.subtrees():
+        if i.label() == 'NAP':
+            print(f"---{i}")
+    # entities = nltk.chunk.ne_chunk(NAP)
+    # result = entities
+    return []
 
 
 if __name__ == "__main__":
