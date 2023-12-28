@@ -1,4 +1,8 @@
 import nltk
+from nltk.chunk import *
+from nltk.chunk.util import *
+from nltk.chunk.regexp import *
+from nltk import Tree
 import sys
 
 TERMINALS = """
@@ -15,16 +19,24 @@ V -> "smiled" | "tell" | "were"
 """
 
 NONTERMINALS = """
-S -> NP | VP | PP | VP NP | VP NP PP | VP PP | S Conj S 
+S -> VP | VP NP | VP DP PP | VP PP | S Conj S | VP DP | PP | S Adv | VP PPS
+
+DP -> Det NP
+NP -> N | Adj NP | N Adj
+VP -> V | NP VP | DP V | Adv V | VP NP |VP DP
+PP -> P NP | P DP
+PPS -> PP PPS | PP
 
 
-NAP -> N | Adj NAP | NAP PP
-NP -> Det NAP |Det NAP Adv
-PP -> P NP | P NAP
-VAP -> V |Adv VAP |VAP Adv
-VP -> NAP VAP | VAP NAP | VAP NP | NP VAP
 
 """
+# S -> NPX | VP | PP | VP NPX | VP NPX PP | VP PP | S Conj S 
+
+# NP -> N | Adj NP | NP PP
+# NPX -> Det NP |Det NP Adv
+# PP -> P NPX | P NP
+# VAP -> V |Adv VAP |VAP Adv
+# VP -> NP VAP | VAP NP | VAP NPX | NPX VAP
 
 grammar = nltk.CFG.fromstring(NONTERMINALS + TERMINALS)
 parser = nltk.ChartParser(grammar)
@@ -61,8 +73,9 @@ def main():
         
 
         print("Noun Phrase Chunks")
-        for np in np_chunk(tree):
-            print(" ".join(np.flatten()))
+        np_chunk(tree)
+        # for np in np_chunk(tree):
+            # print(" ".join(np.flatten()))
 
 
 def preprocess(sentence):
@@ -110,13 +123,41 @@ def np_chunk(tree):
     whose label is "NP" that does not itself contain any other
     noun phrases as subtrees.
     """
-    print(f"+++tree type= {type(tree)}")
-    print(f"+++tree.subtrees()= {type(tree.subtrees())}")
-    for i in tree.subtrees():
-        if i.label() == 'NAP':
-            print(f"---{i}")
-    # entities = nltk.chunk.ne_chunk(NAP)
-    # result = entities
+
+    # print(f"---tree.flatten= {tree.flatten()}")
+    #####         just gives me the short end  branches
+    # for i in tree.subtrees(lambda tree: tree.label() == 'NP'):
+        # print(f"---i.label= {i.label()}")
+  
+        # print(f"---i.leaves= {i}")
+
+    # get flattened tree with labels
+
+    # tree_str = tree.pformat()
+    # print(f"---tree_str= {tree_str}")
+
+    # define tags
+    # NP_pattern = "<DT>?<JJ>*<NN.*>"
+    # THIS NOT WORKING = CREATS REGEX W/EXTRA ()'s
+    # regexp_pattern = tag_pattern2re_pattern(NP_pattern)
+    # print(f"---regexp_pattern= {regexp_pattern}")
+    # SHOULD BE THIS
+
+    # tagged_text = "[ The/DT cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] [ the/DT dog/NN ] chewed/VBD ./."
+    # gold_chunked_text = tagstr2tree(tagged_text)
+    # unchunked_text = gold_chunked_text.flatten()
+
+
+    # regexp_pattern = r'(<DT>)(<JJ>)*(<NN.*>)'
+
+    # print(f"---regexp_pattern= {regexp_pattern}")
+    # chunk_rule = ChunkRule(r'<DT><JJ>*<NN.*>', "Chunk NPs")
+    # chunk_parser = RegexpChunkParser([chunk_rule], chunk_label = "NP")
+    # print(f"---unchunked_text= {unchunked_text}")
+    # chunked_text= chunk_parser.parse(unchunked_text)
+    # print(f"---chunked_text= {chunked_text}")
+    
+    
     return []
 
 
