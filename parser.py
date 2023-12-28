@@ -125,11 +125,19 @@ def np_chunk(tree):
     """
 
     # print(f"---tree.flatten= {tree.flatten()}")
-    #####         just gives me the short end  branches
-    # for i in tree.subtrees(lambda tree: tree.label() == 'NP'):
-        # print(f"---i.label= {i.label()}")
-  
-        # print(f"---i.leaves= {i}")
+    #####         filter by label
+    def findchunks(tree):
+        
+        chunk  = []
+        for i in tree.subtrees:
+            # if no subtrees with label NP, get leaves
+
+          
+        return chunk
+
+    listofchunks = findchunks(tree)
+
+    return listofchunks
 
     # get flattened tree with labels
 
