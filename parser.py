@@ -21,24 +21,32 @@ V -> "smiled" | "tell" | "were"
 """
 
 NONTERMINALS = """
-S -> VP | VP NP | VP DP PP | VP PP | S Conj S | VP DP | PP | S Adv | VP PPS
+S ->  NP VP | VP DP |VP NP | VP PP | S Conj S | VP | NP
 
-DP -> Det NP
-NP -> N | Adj NP | N Adj
-VP -> V | NP VP | DP V | Adv V | VP NP |VP DP
-PP -> P NP | P DP
-PPS -> PP PPS | PP
-
-
+NP -> N | DP PP | Det N | AP N | Det AJP 
+AJP -> Adj N | Adj AJP
+VP -> V | NP VP | VP PP | VP AVP | NP AVP | VP NP
+AVP -> Adv | Adv V
+DP -> Det 
+PP -> P NP | N P | PP N | P NP
 
 """
-# S -> NPX | VP | PP | VP NPX | VP NPX PP | VP PP | S Conj S 
 
-# NP -> N | Adj NP | NP PP
-# NPX -> Det NP |Det NP Adv
-# PP -> P NPX | P NP
-# VAP -> V |Adv VAP |VAP Adv
-# VP -> NP VAP | VAP NP | VAP NPX | NPX VAP
+# DP -> Det NP | Det N
+# NP -> N | Adj N | N Adj 
+# VP -> V | NP VP | DP V | Adv V | VP NP |VP DP
+# PP -> P NP | P DP
+# PPS -> PP PPS | PP
+# AP -> Adj N | Adj AP
+
+
+# S -> VP | VP NP | VP DP PP | VP PP | S Conj S | VP DP | PP | S Adv | VP PPS
+
+# DP -> Det NP
+# NP -> N | Adj NP | N Adj
+# VP -> V | NP VP | DP V | Adv V | VP NP |VP DP
+# PP -> P NP | P DP |
+# PPS -> PP PPS | PP
 
 grammar = nltk.CFG.fromstring(NONTERMINALS + TERMINALS)
 parser = nltk.ChartParser(grammar)
@@ -111,7 +119,7 @@ def preprocess(sentence):
             toremove.append(word)
     for word in toremove:
         tokens.remove(word)
-        
+
     # return a list of strings
     return tokens
 
