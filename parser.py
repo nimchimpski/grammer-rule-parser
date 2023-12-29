@@ -72,7 +72,6 @@ def main():
     # Print each tree with noun phrase chunks
     for tree in trees:
         tree.pretty_print()
-        
 
         print("Noun Phrase Chunks")
         # np_chunk(tree)
@@ -98,6 +97,7 @@ def preprocess(sentence):
     toremove = []
     for word in tokens:
         # print(f"---{word}")
+
     # removing any word that does not contain at least one alphabetic character.
         counter = 0
         for i in word:
@@ -111,9 +111,7 @@ def preprocess(sentence):
             toremove.append(word)
     for word in toremove:
         tokens.remove(word)
-
-
-
+        
     # return a list of strings
     return tokens
 
@@ -129,29 +127,30 @@ def np_chunk(tree):
     def recursivechunkhunter(tree, chunklist=None):
         if chunklist is None:
             chunklist = []
-        print(f"\n\n+++recursivechunkhunter")
-        print(f"+++chunklist= {chunklist}")
-        print(f"+++tree.label()= {tree.label()}")
+        # print(f"\n\n+++recursivechunkhunter")
+        # print(f"+++chunklist= {chunklist}")
+        # print(f"+++tree.label()= {tree.label()}")
 
         ####    base case
-        print(f"---tree= {tree}")
+        # print(f"---tree= {tree}")
         if tree.label() == 'NP':
             if not any(child.label() == 'NP' for child in tree if isinstance(child, Tree)):
-                print(f"\n---base case")
-                chunklist.append(tree.leaves().pop())
-                print(f"---chunklist= {chunklist}")
+                # print(f"\n---base case")
+                chunklist.append(tree)
+                # print(f"---chunklist= {chunklist}")
         ####    DO NOT RETURN ANYTHING ELSE THERE IS INSUFFICIENT BURROWING. CHUNKLIST CARRIES RESULT.
             
         ####    recursive case
-        print(f"---recursive case")
+        # print(f"---recursive case")
         for subtree in tree:
             if isinstance(subtree, Tree):
                 recursivechunkhunter(subtree, chunklist)
         return chunklist
     
     result = recursivechunkhunter(tree)
-    print(f"---result= {result}")
+    # print(f"---result= {result}")
     return result
+
 
 
 if __name__ == "__main__":
