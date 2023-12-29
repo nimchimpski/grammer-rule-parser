@@ -5,6 +5,8 @@ from nltk.chunk.regexp import *
 from nltk import Tree
 import sys
 
+from abc import ABCMeta, abstractmethod
+
 TERMINALS = """
 Adj -> "country" | "dreadful" | "enigmatical" | "little" | "moist" | "red"
 Adv -> "down" | "here" | "never"
@@ -73,9 +75,9 @@ def main():
         
 
         print("Noun Phrase Chunks")
-        np_chunk(tree)
-        # for np in np_chunk(tree):
-            # print(" ".join(np.flatten()))
+        # np_chunk(tree)
+        for np in np_chunk(tree):
+            print(" ".join(np.flatten()))
 
 
 def preprocess(sentence):
@@ -123,50 +125,33 @@ def np_chunk(tree):
     whose label is "NP" that does not itself contain any other
     noun phrases as subtrees.
     """
+   
+    def recursivechunkhunter(tree, chunklist=None):
+        if chunklist is None:
+            chunklist = []
+        print(f"\n\n+++recursivechunkhunter")
+        print(f"+++chunklist= {chunklist}")
+        print(f"+++tree.label()= {tree.label()}")
 
-    # print(f"---tree.flatten= {tree.flatten()}")
-    #####         filter by label
-    def findchunks(tree):
-        
-        chunk  = []
-        for i in tree.subtrees:
-            # if no subtrees with label NP, get leaves
-
-          
-        return chunk
-
-    listofchunks = findchunks(tree)
-
-    return listofchunks
-
-    # get flattened tree with labels
-
-    # tree_str = tree.pformat()
-    # print(f"---tree_str= {tree_str}")
-
-    # define tags
-    # NP_pattern = "<DT>?<JJ>*<NN.*>"
-    # THIS NOT WORKING = CREATS REGEX W/EXTRA ()'s
-    # regexp_pattern = tag_pattern2re_pattern(NP_pattern)
-    # print(f"---regexp_pattern= {regexp_pattern}")
-    # SHOULD BE THIS
-
-    # tagged_text = "[ The/DT cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] [ the/DT dog/NN ] chewed/VBD ./."
-    # gold_chunked_text = tagstr2tree(tagged_text)
-    # unchunked_text = gold_chunked_text.flatten()
-
-
-    # regexp_pattern = r'(<DT>)(<JJ>)*(<NN.*>)'
-
-    # print(f"---regexp_pattern= {regexp_pattern}")
-    # chunk_rule = ChunkRule(r'<DT><JJ>*<NN.*>', "Chunk NPs")
-    # chunk_parser = RegexpChunkParser([chunk_rule], chunk_label = "NP")
-    # print(f"---unchunked_text= {unchunked_text}")
-    # chunked_text= chunk_parser.parse(unchunked_text)
-    # print(f"---chunked_text= {chunked_text}")
+        ####    base case
+        print(f"---tree= {tree}")
+        if tree.label() == 'NP':
+            if not any(child.label() == 'NP' for child in tree if isinstance(child, Tree)):
+                print(f"\n---base case")
+                chunklist.append(tree.leaves().pop())
+                print(f"---chunklist= {chunklist}")
+        ####    DO NOT RETURN ANYTHING ELSE THERE IS INSUFFICIENT BURROWING. CHUNKLIST CARRIES RESULT.
+            
+        ####    recursive case
+        print(f"---recursive case")
+        for subtree in tree:
+            if isinstance(subtree, Tree):
+                recursivechunkhunter(subtree, chunklist)
+        return chunklist
     
-    
-    return []
+    result = recursivechunkhunter(tree)
+    print(f"---result= {result}")
+    return result
 
 
 if __name__ == "__main__":
