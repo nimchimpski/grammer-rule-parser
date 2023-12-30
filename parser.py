@@ -32,22 +32,6 @@ PP -> P NP | N P | PP N | P NP
 
 """
 
-# DP -> Det NP | Det N
-# NP -> N | Adj N | N Adj 
-# VP -> V | NP VP | DP V | Adv V | VP NP |VP DP
-# PP -> P NP | P DP
-# PPS -> PP PPS | PP
-# AP -> Adj N | Adj AP
-
-
-# S -> VP | VP NP | VP DP PP | VP PP | S Conj S | VP DP | PP | S Adv | VP PPS
-
-# DP -> Det NP
-# NP -> N | Adj NP | N Adj
-# VP -> V | NP VP | DP V | Adv V | VP NP |VP DP
-# PP -> P NP | P DP |
-# PPS -> PP PPS | PP
-
 grammar = nltk.CFG.fromstring(NONTERMINALS + TERMINALS)
 parser = nltk.ChartParser(grammar)
 
